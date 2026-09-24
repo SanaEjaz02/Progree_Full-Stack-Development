@@ -22,4 +22,4 @@ To run the tests, use:
 node --test tests/portfolio.test.js
 ```
 
-The site uses Google Fonts when online and falls back gracefully to the declared font families when offline. Replace the placeholder email, social links, profile mark, and project content with final portfolio details when ready.
+The site uses Google Fonts when online and falls back gracefully to the declared font families when offline. Project links point to Sana Ejaz's public GitHub repositories, while the profile mark remains an intentional text-based visual identity.

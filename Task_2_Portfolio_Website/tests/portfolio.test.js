@@ -16,6 +16,15 @@ test('HTML uses the required semantic structure and sections', () => {
   }
 });
 
+test('portfolio contains Sana\'s real profile and project links', () => {
+  const html = read('index.html');
+  for (const text of ['Institute of Space Technology', 'hafizasanaawan@gmail.com', 'CARDIVA', 'Multi-Class Sentiment Classifier', 'Heuristic Graph Pathfinding Agent', 'Real-Time Computer Vision Pipeline']) {
+    assert.match(html, new RegExp(text.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\\\$&')));
+  }
+  assert.equal((html.match(/class="project-card/g) || []).length, 4);
+  assert.doesNotMatch(html, /placeholder|lorem ipsum|example\.com|Project Atlas|Frame Studio|Loop Notes/i);
+});
+
 test('navigation has accessible state controls and keyboard behavior', () => {
   const html = read('index.html');
   const js = read('js/script.js');

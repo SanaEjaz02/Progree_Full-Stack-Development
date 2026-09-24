@@ -2,13 +2,13 @@
 
 ## Overview
 
-This project is a semantic, single-page portfolio website for Sana Ejaz Awan. It is built with plain HTML5, custom CSS, and a small vanilla JavaScript module so the implementation demonstrates core front-end skills without a heavy framework.
+This project is a semantic, single-page portfolio website for Sana Ejaz. It is built with plain HTML5, custom CSS, and a small vanilla JavaScript module so the implementation demonstrates core front-end skills without a heavy framework. The content now presents Sana's education, internship experience, technical skills, and four real projects.
 
 ## Responsive design approach
 
 The layout uses a mobile-first responsive strategy with CSS Grid for major page compositions and Flexbox for navigation, actions, metadata, and footer alignment. Fluid sizing uses `clamp()` for display typography and constrained shell widths so the content remains readable on large screens without becoming cramped on smaller ones.
 
-The visual system uses a graphite background for high contrast, a warm paper surface, and mint/coral accents to create a professional but memorable interface. Project visuals are CSS compositions for now and can be replaced by real images in the reserved `assets/` folder.
+The visual system uses a graphite background for high contrast, a warm paper surface, and mint/coral accents to create a professional but memorable interface. Four cohesive CSS project visuals keep the page lightweight while linking directly to the corresponding GitHub repositories.
 
 ## Breakpoints
 
@@ -27,4 +27,4 @@ The mobile navigation is controlled by `js/script.js`. It animates open and clos
 - No framework or runtime dependency is needed for the site.
 - The test suite uses Node's built-in test runner, avoiding an unnecessary dependency install for structural checks.
 - `run.bat` opens the static entry point directly because there is no server-side behavior yet.
-- Placeholder project content and contact details are intentionally easy to replace.
+- Contact actions use Sana's Gmail, GitHub, and LinkedIn profiles.
