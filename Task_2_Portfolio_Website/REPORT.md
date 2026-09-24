@@ -8,7 +8,7 @@ This project is a semantic, single-page portfolio website for Sana Ejaz. It is b
 
 The layout uses a mobile-first responsive strategy with CSS Grid for major page compositions and Flexbox for navigation, actions, metadata, and footer alignment. Fluid sizing uses `clamp()` for display typography and constrained shell widths so the content remains readable on large screens without becoming cramped on smaller ones.
 
-The visual system uses a graphite background for high contrast, a warm paper surface, and mint/coral accents to create a professional but memorable interface. The project visuals use lightweight CSS animation fallbacks rather than remote Lottie files because the LottieFiles library was not reliably accessible during implementation. Each fallback is purpose-built: a pulse trace for CARDIVA, chat bubbles for sentiment analysis, a node route for pathfinding, and a scanning target for computer vision.
+The visual system uses a graphite background for high contrast, a warm paper surface, and mint/coral accents to create a professional but memorable interface. The project visuals use lightweight CSS animation fallbacks rather than remote Lottie files because the LottieFiles library was not reliably accessible during implementation. Each fallback is purpose-built and genuinely animated: an SVG ECG path draws left-to-right for CARDIVA, chat bubbles pop in sequentially for sentiment analysis, an SVG marker moves through the pathfinding route's node coordinates, and a scanner line plus tracking box move for computer vision.
 
 ## Breakpoints
 
@@ -30,3 +30,4 @@ The mobile navigation is controlled by `js/script.js`. It animates open and clos
 - Contact actions use Sana's Gmail, GitHub, and LinkedIn profiles.
 - Project visual titles use responsive sizing and `overflow-wrap: anywhere` so long labels remain inside their cards from mobile through desktop.
 - The contact email is a direct `mailto:` link that opens the user's email client.
+- The email link has no `target` attribute and no JavaScript handler intercepts its default left-click behavior.

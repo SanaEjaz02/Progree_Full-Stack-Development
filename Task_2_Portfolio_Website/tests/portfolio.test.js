@@ -23,6 +23,7 @@ test('portfolio contains Sana\'s real profile and project links', () => {
   }
   assert.equal((html.match(/class="project-card/g) || []).length, 4);
   assert.match(html, /href="mailto:hafizasanaawan@gmail\.com"/);
+  assert.doesNotMatch(html, /mailto:hafizasanaawan@gmail\.com"[^>]*target=/);
   assert.equal((html.match(/class="project-animation/g) || []).length, 4);
   assert.doesNotMatch(html, /placeholder|lorem ipsum|example\.com|Project Atlas|Frame Studio|Loop Notes/i);
 });
@@ -34,6 +35,7 @@ test('navigation has accessible state controls and keyboard behavior', () => {
   assert.match(html, /aria-controls="primary-navigation"/);
   assert.match(js, /event\.key === 'Escape'/);
   assert.match(js, /menuToggle\.focus\(\)/);
+  assert.doesNotMatch(js, /preventDefault|onclick/);
 });
 
 test('styles include responsive layout and reduced motion support', () => {
@@ -43,5 +45,7 @@ test('styles include responsive layout and reduced motion support', () => {
   assert.match(css, /@media \(max-width: 760px\)/);
   assert.match(css, /prefers-reduced-motion/);
   assert.match(css, /overflow-wrap: anywhere/);
-  assert.match(css, /@keyframes (pulse-wave|chat-float|route-pulse|scanner-line)/);
+  assert.match(css, /stroke-dashoffset/);
+  assert.match(css, /@keyframes route-travel[\s\S]*translate\(52px, -78px\)/);
+  assert.match(css, /@keyframes (ecg-draw|chat-float|route-travel|scanner-line)/);
 });
