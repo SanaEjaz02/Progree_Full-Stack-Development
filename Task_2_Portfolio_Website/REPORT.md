@@ -8,7 +8,7 @@ This project is a semantic, single-page portfolio website for Sana Ejaz. It is b
 
 The layout uses a mobile-first responsive strategy with CSS Grid for major page compositions and Flexbox for navigation, actions, metadata, and footer alignment. Fluid sizing uses `clamp()` for display typography and constrained shell widths so the content remains readable on large screens without becoming cramped on smaller ones.
 
-The visual system uses a graphite background for high contrast, a warm paper surface, and mint/coral accents to create a professional but memorable interface. Four cohesive CSS project visuals keep the page lightweight while linking directly to the corresponding GitHub repositories.
+The visual system uses a graphite background for high contrast, a warm paper surface, and mint/coral accents to create a professional but memorable interface. The project visuals use lightweight CSS animation fallbacks rather than remote Lottie files because the LottieFiles library was not reliably accessible during implementation. Each fallback is purpose-built: a pulse trace for CARDIVA, chat bubbles for sentiment analysis, a node route for pathfinding, and a scanning target for computer vision.
 
 ## Breakpoints
 
@@ -28,3 +28,5 @@ The mobile navigation is controlled by `js/script.js`. It animates open and clos
 - The test suite uses Node's built-in test runner, avoiding an unnecessary dependency install for structural checks.
 - `run.bat` opens the static entry point directly because there is no server-side behavior yet.
 - Contact actions use Sana's Gmail, GitHub, and LinkedIn profiles.
+- Project visual titles use responsive sizing and `overflow-wrap: anywhere` so long labels remain inside their cards from mobile through desktop.
+- The contact email is a direct `mailto:` link that opens the user's email client.

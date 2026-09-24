@@ -22,6 +22,8 @@ test('portfolio contains Sana\'s real profile and project links', () => {
     assert.match(html, new RegExp(text.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\\\$&')));
   }
   assert.equal((html.match(/class="project-card/g) || []).length, 4);
+  assert.match(html, /href="mailto:hafizasanaawan@gmail\.com"/);
+  assert.equal((html.match(/class="project-animation/g) || []).length, 4);
   assert.doesNotMatch(html, /placeholder|lorem ipsum|example\.com|Project Atlas|Frame Studio|Loop Notes/i);
 });
 
@@ -40,4 +42,6 @@ test('styles include responsive layout and reduced motion support', () => {
   assert.match(css, /display: flex/);
   assert.match(css, /@media \(max-width: 760px\)/);
   assert.match(css, /prefers-reduced-motion/);
+  assert.match(css, /overflow-wrap: anywhere/);
+  assert.match(css, /@keyframes (pulse-wave|chat-float|route-pulse|scanner-line)/);
 });
