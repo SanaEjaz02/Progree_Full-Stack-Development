@@ -31,3 +31,5 @@ The mobile navigation is controlled by `js/script.js`. It animates open and clos
 - Project visual titles use responsive sizing and `overflow-wrap: anywhere` so long labels remain inside their cards from mobile through desktop.
 - The contact email is a direct `mailto:` link that opens the user's email client.
 - The email link has no `target` attribute and no JavaScript handler intercepts its default left-click behavior.
+- An isolated `mailto-isolation-test.html` containing only the link produced a `mailto:` request on a normal left-click; the browser harness reported `ERR_ABORTED` while handing the request to the operating system. This indicates the remaining behavior is controlled by Windows' default email-app association, not the portfolio site.
+- The temporary isolation page is used for verification only and is not included in the final deliverables.

@@ -23,6 +23,8 @@ test('portfolio contains Sana\'s real profile and project links', () => {
   }
   assert.equal((html.match(/class="project-card/g) || []).length, 4);
   assert.match(html, /href="mailto:hafizasanaawan@gmail\.com"/);
+  assert.match(html, /<a class="button button-light" href="mailto:hafizasanaawan@gmail\.com">hafizasanaawan@gmail\.com/);
+  assert.match(html, /<a class="brand" href="#top" aria-label="Sana Ejaz home">Sana Ejaz<\/a>/);
   assert.doesNotMatch(html, /mailto:hafizasanaawan@gmail\.com"[^>]*target=/);
   assert.equal((html.match(/class="project-animation/g) || []).length, 4);
   assert.doesNotMatch(html, /placeholder|lorem ipsum|example\.com|Project Atlas|Frame Studio|Loop Notes/i);
