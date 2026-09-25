@@ -22,10 +22,9 @@ test('portfolio contains Sana\'s real profile and project links', () => {
     assert.match(html, new RegExp(text.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\\\$&')));
   }
   assert.equal((html.match(/class="project-card/g) || []).length, 4);
-  assert.match(html, /href="mailto:hafizasanaawan@gmail\.com"/);
-  assert.match(html, /<a class="button button-light" href="mailto:hafizasanaawan@gmail\.com">hafizasanaawan@gmail\.com/);
+  assert.match(html, /<button class="button button-light" id="copy-email" type="button"/);
+  assert.match(html, /aria-live="polite"/);
   assert.match(html, /<a class="brand" href="#top" aria-label="Sana Ejaz home">Sana Ejaz<\/a>/);
-  assert.doesNotMatch(html, /mailto:hafizasanaawan@gmail\.com"[^>]*target=/);
   assert.equal((html.match(/class="project-animation/g) || []).length, 4);
   assert.doesNotMatch(html, /placeholder|lorem ipsum|example\.com|Project Atlas|Frame Studio|Loop Notes/i);
 });
@@ -38,6 +37,9 @@ test('navigation has accessible state controls and keyboard behavior', () => {
   assert.match(js, /event\.key === 'Escape'/);
   assert.match(js, /menuToggle\.focus\(\)/);
   assert.doesNotMatch(js, /preventDefault|onclick/);
+  assert.match(js, /navigator\.clipboard\.writeText/);
+  assert.match(js, /document\.execCommand\('copy'\)/);
+  assert.match(js, /setTimeout\(\(\) =>/);
 });
 
 test('styles include responsive layout and reduced motion support', () => {

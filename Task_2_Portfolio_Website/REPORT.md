@@ -29,7 +29,6 @@ The mobile navigation is controlled by `js/script.js`. It animates open and clos
 - `run.bat` opens the static entry point directly because there is no server-side behavior yet.
 - Contact actions use Sana's Gmail, GitHub, and LinkedIn profiles.
 - Project visual titles use responsive sizing and `overflow-wrap: anywhere` so long labels remain inside their cards from mobile through desktop.
-- The contact email is a direct `mailto:` link that opens the user's email client.
-- The email link has no `target` attribute and no JavaScript handler intercepts its default left-click behavior.
-- An isolated `mailto-isolation-test.html` containing only the link produced a `mailto:` request on a normal left-click; the browser harness reported `ERR_ABORTED` while handing the request to the operating system. This indicates the remaining behavior is controlled by Windows' default email-app association, not the portfolio site.
-- The temporary isolation page is used for verification only and is not included in the final deliverables.
+- The contact action is now a native `Copy Email` button so it works reliably with web-based Gmail and does not depend on a Windows email-client association.
+- The button uses `navigator.clipboard.writeText()` first and falls back to a temporary hidden input with `document.execCommand('copy')` in older or restricted browsers. A live status announces success or failure, and the label returns after two seconds.
+- Browser verification confirmed the exact email is copied on click, the status announces success, the label resets after two seconds, Enter activates the button, and the legacy fallback executes when Clipboard API support is unavailable.
