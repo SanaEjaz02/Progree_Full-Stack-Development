@@ -52,12 +52,14 @@ Alternatively, double-click `run.bat`. It installs missing dependencies and star
 ## API
 
 - `GET /api/tasks` - list tasks
-- `POST /api/tasks` - create `{ title, description?, status? }`
+- `POST /api/tasks` - create `{ title, description?, status?, priority?, dueDate?, tag? }`
 - `PATCH /api/tasks/:id` or `PUT /api/tasks/:id` - update task fields
 - `DELETE /api/tasks/:id` - remove a task and return `{ deleted: true }`
 - `GET /api/health` - server health check
 
 SQLite data is stored in `server/data/tasks.db` and is intentionally ignored by Git. Copy `server/.env.example` to `server/.env` to change the port, client origin, or database file.
+
+The dashboard also includes priority indicators, optional due dates with overdue styling, tags, live search, All/Active/Completed filters, priority/due-date/created sorting, completion progress, and an optimistic delete flow with a five-second Undo snackbar.
 
 ## Verify
 

@@ -23,9 +23,12 @@ test('GET starts empty and POST creates a persistent task in the database', asyn
   await withServer(async (base) => {
     const empty = await api(base, '/api/tasks');
     assert.deepEqual(empty.body.tasks, []);
-    const created = await api(base, '/api/tasks', { method: 'POST', body: JSON.stringify({ title: 'Ship dashboard', description: 'Finish CRUD flow' }) });
+    const created = await api(base, '/api/tasks', { method: 'POST', body: JSON.stringify({ title: 'Ship dashboard', description: 'Finish CRUD flow', priority: 'high', dueDate: '2026-10-01', tag: 'Work' }) });
     assert.equal(created.response.status, 201);
     assert.equal(created.body.task.status, 'pending');
+    assert.equal(created.body.task.priority, 'high');
+    assert.equal(created.body.task.dueDate, '2026-10-01');
+    assert.equal(created.body.task.tag, 'Work');
     const listed = await api(base, '/api/tasks');
     assert.equal(listed.body.tasks[0].title, 'Ship dashboard');
   });
@@ -35,9 +38,11 @@ test('PATCH updates status and DELETE removes a task', async () => {
   await withServer(async (base) => {
     const created = await api(base, '/api/tasks', { method: 'POST', body: JSON.stringify({ title: 'Test lifecycle' }) });
     const id = created.body.task.id;
-    const updated = await api(base, `/api/tasks/${id}`, { method: 'PATCH', body: JSON.stringify({ status: 'complete', title: 'Completed lifecycle' }) });
+    const updated = await api(base, `/api/tasks/${id}`, { method: 'PATCH', body: JSON.stringify({ status: 'complete', title: 'Completed lifecycle', priority: 'low', dueDate: '2026-11-01', tag: 'Done' }) });
     assert.equal(updated.body.task.status, 'complete');
     assert.equal(updated.body.task.title, 'Completed lifecycle');
+    assert.equal(updated.body.task.priority, 'low');
+    assert.equal(updated.body.task.tag, 'Done');
     const removed = await api(base, `/api/tasks/${id}`, { method: 'DELETE' });
     assert.equal(removed.response.status, 200);
     const remaining = await api(base, '/api/tasks');

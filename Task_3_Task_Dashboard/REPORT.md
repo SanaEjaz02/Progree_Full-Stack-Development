@@ -14,15 +14,21 @@ Each task has an integer `id`, required `title`, optional `description`, `status
 
 ## Frontend decisions
 
-The UI uses a two-column workspace on larger screens and a single-column flow below 800px. A focused composer sits beside the task list, with a native checkbox-like button for completion, inline edit mode, and a confirmation dialog for deletion. Loading, empty, and API error states are visible in the page rather than only in the console. The design reuses the Task 2 graphite, paper, mint, and coral language while adding a calm dashboard-specific layout.
+The UI uses a two-column workspace on larger screens and a single-column flow below 800px. A focused composer sits beside the task list, with native controls for completion, priority, due date, and tags. Search, All/Active/Completed tabs, and sort controls sit above the list, while a progress bar communicates completion at a glance. Loading, empty, and API error states are visible in the page rather than only in the console.
+
+The visual direction deliberately differs from Task 2: Daymark uses a cool sky-blue surface, violet and cyan accents, rounded panels, soft depth, and lively micro-interactions. Buttons lift and press, checkboxes pop when completed, cards elevate on hover, and the delete flow removes immediately before offering a five-second Undo snackbar.
 
 ## Interaction and accessibility
 
-Forms use associated labels, required title validation, native buttons for keyboard activation, semantic headings, status pills, and an alert role for API errors. Delete confirmation uses `alertdialog`, and each task action has an accessible label. Task additions fade in, completed tasks become visually distinct, and reduced-motion users receive shortened animations through `prefers-reduced-motion`.
+Forms use associated labels, required title validation, native buttons for keyboard activation, semantic headings, status pills, and an alert role for API errors. Each task action has an accessible label. Editing stays inline and preserves the exact scroll position; there is no anchor navigation or forced jump. Task additions fade in, completed tasks become visually distinct, and reduced-motion users receive shortened animations through `prefers-reduced-motion`.
 
 ## Testing and trade-offs
 
-The server uses Node's built-in test runner to exercise empty reads, creation, updates, deletion, validation, and a file-backed SQLite reconnect. Client tests verify the presence of CRUD requests, visible states, responsive rules, and motion support. The production client build is also run as a separate verification step. SQLite was selected because it persists locally without a separate database service; a production deployment could later swap the repository for PostgreSQL without changing the route contract.
+The server uses Node's built-in test runner to exercise empty reads, creation with priority/due date/tag metadata, updates, deletion, validation, and a file-backed SQLite reconnect. Client tests verify CRUD requests, metadata controls, search/filter/sort/undo hooks, visible states, responsive rules, no forced scrolling, and motion support. The production client build is also run as a separate verification step. SQLite was selected because it persists locally without a separate database service; a production deployment could later swap the repository for PostgreSQL without changing the route contract.
+
+## End-to-end verification
+
+The live browser walkthrough created a fully populated task, edited it without changing `scrollY`, searched for it, filtered Active tasks, sorted by priority, marked it complete, deleted it, restored it with Undo, and deleted it again after the five-second window. The API was also restarted with a persisted task and returned that task after reconnecting.
 
 ## Known local setup
 

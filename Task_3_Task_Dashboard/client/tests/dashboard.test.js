@@ -7,11 +7,14 @@ const source = fs.readFileSync(path.resolve('src/App.jsx'), 'utf8');
 const styles = fs.readFileSync(path.resolve('src/styles.css'), 'utf8');
 
 test('dashboard renders CRUD states and controls', () => {
-  for (const phrase of ['Loading your workspace', 'Nothing here yet', 'Add a task', 'Save changes', 'Delete task', 'Complete']) assert.match(source, new RegExp(phrase));
+  for (const phrase of ['Loading your workspace', 'Nothing here yet', 'Add a task', 'Save changes', 'Complete', 'priority', 'dueDate', 'tag', 'Search tasks', 'Undo']) assert.match(source, new RegExp(phrase));
   assert.match(source, /fetch\(path/);
   assert.match(source, /method: 'POST'/);
   assert.match(source, /method: 'PATCH'/);
   assert.match(source, /method: 'DELETE'/);
+  assert.match(source, /editScrollPosition/);
+  assert.doesNotMatch(source, /autoFocus/);
+  assert.match(source, /setTimeout\(\(\) =>/);
 });
 
 test('dashboard has responsive layout and reduced-motion support', () => {
