@@ -5,6 +5,7 @@ export function createTaskRoutes(controller) {
   router.get('/', controller.list);
   router.post('/', controller.create);
   router.patch('/:id', controller.update);
+  router.put('/order', controller.reorder);
   router.put('/:id', controller.update);
   router.delete('/:id', controller.remove);
   return router;

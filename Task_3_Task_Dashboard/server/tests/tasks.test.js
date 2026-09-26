@@ -23,14 +23,28 @@ test('GET starts empty and POST creates a persistent task in the database', asyn
   await withServer(async (base) => {
     const empty = await api(base, '/api/tasks');
     assert.deepEqual(empty.body.tasks, []);
-    const created = await api(base, '/api/tasks', { method: 'POST', body: JSON.stringify({ title: 'Ship dashboard', description: 'Finish CRUD flow', priority: 'high', dueDate: '2026-10-01', tag: 'Work' }) });
+    const created = await api(base, '/api/tasks', { method: 'POST', body: JSON.stringify({ title: 'Ship dashboard', description: 'Finish CRUD flow', priority: 'high', dueDate: '2026-10-01', tag: 'Work', accent: 'cyan', emoji: '✦', pinned: true }) });
     assert.equal(created.response.status, 201);
     assert.equal(created.body.task.status, 'pending');
     assert.equal(created.body.task.priority, 'high');
     assert.equal(created.body.task.dueDate, '2026-10-01');
     assert.equal(created.body.task.tag, 'Work');
+    assert.equal(created.body.task.accent, 'cyan');
+    assert.equal(created.body.task.emoji, '✦');
+    assert.equal(created.body.task.pinned, 1);
     const listed = await api(base, '/api/tasks');
     assert.equal(listed.body.tasks[0].title, 'Ship dashboard');
+  });
+});
+
+test('PUT /api/tasks/order persists a complete manual order', async () => {
+  await withServer(async (base) => {
+    const first = await api(base, '/api/tasks', { method: 'POST', body: JSON.stringify({ title: 'First task' }) });
+    const second = await api(base, '/api/tasks', { method: 'POST', body: JSON.stringify({ title: 'Second task' }) });
+    const reordered = await api(base, '/api/tasks/order', { method: 'PUT', body: JSON.stringify({ ids: [second.body.task.id, first.body.task.id] }) });
+    assert.deepEqual(reordered.body.tasks.map((task) => task.id), [second.body.task.id, first.body.task.id]);
+    const invalid = await api(base, '/api/tasks/order', { method: 'PUT', body: JSON.stringify({ ids: [first.body.task.id] }) });
+    assert.equal(invalid.response.status, 400);
   });
 });
 

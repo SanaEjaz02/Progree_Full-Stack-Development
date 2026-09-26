@@ -54,10 +54,15 @@ Alternatively, double-click `run.bat`. It installs missing dependencies and star
 - `GET /api/tasks` - list tasks
 - `POST /api/tasks` - create `{ title, description?, status?, priority?, dueDate?, tag? }`
 - `PATCH /api/tasks/:id` or `PUT /api/tasks/:id` - update task fields
+- `PUT /api/tasks/order` - persist a manual order using `{ ids: [...] }`
 - `DELETE /api/tasks/:id` - remove a task and return `{ deleted: true }`
 - `GET /api/health` - server health check
 
 SQLite data is stored in `server/data/tasks.db` and is intentionally ignored by Git. Copy `server/.env.example` to `server/.env` to change the port, client origin, or database file.
+
+The dashboard also includes task pinning, five accent colors, optional emoji markers, expandable details, drag-and-drop ordering, a remembered dark/light theme, priority/due-date/created sorting, completion progress, and an all-complete celebration.
+
+Manual drag reordering is available in `My order` when no filter/search is active. Pinned tasks remain above the rest; within each pinned group, the saved order is respected.
 
 The dashboard also includes priority indicators, optional due dates with overdue styling, tags, live search, All/Active/Completed filters, priority/due-date/created sorting, completion progress, and an optimistic delete flow with a five-second Undo snackbar.
 
