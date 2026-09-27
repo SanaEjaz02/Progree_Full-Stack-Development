@@ -1,0 +1,588 @@
+%PDF-1.3
+%ºß¬à
+3 0 obj
+<</Type /Page
+/Parent 1 0 R
+/Resources 2 0 R
+/MediaBox [0 0 595.2799999999999727 841.8899999999999864]
+/Contents 4 0 R
+>>
+endobj
+4 0 obj
+<<
+/Length 4514
+>>
+stream
+0.200025 w
+0 G
+BT
+/F2 20 Tf
+23. TL
+0 g
+52. 789.8899999999999864 Td
+(Daymark Task Dashboard Final Report) Tj
+ET
+BT
+/F2 14 Tf
+16.0999999999999979 TL
+0 g
+52. 747.8899999999999864 Td
+(Overview) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0 g
+52. 713.8899999999999864 Td
+(Daymark is a complete task dashboard built with a React client and Express API, using SQLite for) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0 g
+52. 697.8899999999999864 Td
+(local persistence. The final polish pass added a clearer delete confirmation flow and a per-task PDF) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0 g
+52. 681.8899999999999864 Td
+(export option without disrupting the existing CRUD, ordering, pinning, theming, and undo behavior.) Tj
+ET
+BT
+/F2 14 Tf
+16.0999999999999979 TL
+0 g
+52. 655.8899999999999864 Td
+(Final product refinements) Tj
+ET
+BT
+/F2 12 Tf
+13.7999999999999989 TL
+0 g
+52. 621.8899999999999864 Td
+(1\) Delete confirmation flow) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0 g
+52. 593.8899999999999864 Td
+(The destructive delete action is now gated by a small modal popover instead of firing immediately.) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0 g
+52. 577.8899999999999864 Td
+(Clicking the task delete control opens a confirmation panel with the message: "Are you sure you want) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0 g
+52. 561.8899999999999864 Td
+(to delete this task?" and two choices: "Cancel" and "Yes, delete".) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0 g
+64. 535.8899999999999864 Td
+(• Cancel leaves the task untouched.) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0 g
+64. 519.8899999999999864 Td
+(• Yes, delete triggers the original undo-toast pattern that preserves the task for a short grace period) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0 g
+64. 503.8899999999999864 Td
+(before the permanent API DELETE is sent.) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0 g
+64. 487.8899999999999864 Td
+(• This keeps the destructive action explicit and user-controlled while retaining the lightweight recovery) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0 g
+64. 471.8899999999999864 Td
+(pattern.) Tj
+ET
+BT
+/F2 12 Tf
+13.7999999999999989 TL
+0 g
+52. 445.8899999999999864 Td
+(2\) PDF export for individual tasks) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0 g
+52. 417.8899999999999864 Td
+(Each task card includes a compact Share action that exports a single task as a clean PDF. The) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0 g
+52. 401.8899999999999864 Td
+(implementation uses jsPDF on the client side to generate a properly formatted document with:) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0 g
+64. 375.8899999999999864 Td
+(• the Daymark branding header) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0 g
+64. 359.8899999999999864 Td
+(• task title) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0 g
+64. 343.8899999999999864 Td
+(• note/description body) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0 g
+64. 327.8899999999999864 Td
+(• due date) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0 g
+64. 311.8899999999999864 Td
+(• priority) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0 g
+64. 295.8899999999999864 Td
+(• status) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0 g
+64. 279.8899999999999864 Td
+(• tag metadata) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0 g
+64. 263.8899999999999864 Td
+(• created date) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0 g
+52. 237.8899999999999864 Td
+(The exported PDF is saved locally as a readable document rather than a raw browser screenshot.) Tj
+ET
+BT
+/F2 14 Tf
+16.0999999999999979 TL
+0 g
+52. 211.8899999999999864 Td
+(Architecture and UX notes) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0 g
+52. 177.8899999999999864 Td
+(The dashboard continues to use the same task API and local SQLite repository. The client remains) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0 g
+52. 161.8899999999999864 Td
+(responsible for presentation and UX polish: modal state, export generation, and the undo timer) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0 g
+52. 145.8899999999999864 Td
+(lifecycle are all kept in the React view layer, while the server continue to handle persistence and) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0 g
+52. 129.8899999999999864 Td
+(validation.) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0 g
+52. 103.8899999999999864 Td
+(The existing dark-first visual language remains intact, and the update remains responsive across) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0 g
+52. 87.8899999999999864 Td
+(narrow and wider screens. The modal and export actions are designed to fit the existing card layout) Tj
+ET
+endstream
+endobj
+5 0 obj
+<</Type /Page
+/Parent 1 0 R
+/Resources 2 0 R
+/MediaBox [0 0 595.2799999999999727 841.8899999999999864]
+/Contents 6 0 R
+>>
+endobj
+6 0 obj
+<<
+/Length 1676
+>>
+stream
+0.200025 w
+0 G
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0 g
+52. 789.8899999999999864 Td
+(without introducing layout breaks or horizontal overflow.) Tj
+ET
+BT
+/F2 14 Tf
+16.0999999999999979 TL
+0 g
+52. 763.8899999999999864 Td
+(Verification) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0 g
+52. 729.8899999999999864 Td
+(The final checks were run after the refinements were merged:) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0 g
+64. 703.8899999999999864 Td
+(• Client tests: 2/2 passed) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0 g
+64. 687.8899999999999864 Td
+(• Server tests: 5/5 passed) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0 g
+64. 671.8899999999999864 Td
+(• Production build: succeeded) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0 g
+64. 655.8899999999999864 Td
+(• Browser validation: confirmation modal shows and cancel does nothing; confirming delete still) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0 g
+64. 639.8899999999999864 Td
+(triggers the undo toast and can restore the task; export triggers a valid PDF download;) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0 g
+64. 623.8899999999999864 Td
+(responsiveness remains stable at mobile and desktop widths.) Tj
+ET
+BT
+/F2 14 Tf
+16.0999999999999979 TL
+0 g
+52. 597.8899999999999864 Td
+(Final status) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0 g
+64. 563.8899999999999864 Td
+(• Delete confirmation added and working: Yes) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0 g
+64. 547.8899999999999864 Td
+(• PDF export working: Yes, using jsPDF) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0 g
+64. 531.8899999999999864 Td
+(• Tests passed: Yes) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0 g
+64. 515.8899999999999864 Td
+(• Pushed to git: Yes) Tj
+ET
+endstream
+endobj
+1 0 obj
+<</Type /Pages
+/Kids [3 0 R 5 0 R ]
+/Count 2
+>>
+endobj
+7 0 obj
+<<
+/Type /Font
+/BaseFont /Helvetica
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+8 0 obj
+<<
+/Type /Font
+/BaseFont /Helvetica-Bold
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+9 0 obj
+<<
+/Type /Font
+/BaseFont /Helvetica-Oblique
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+10 0 obj
+<<
+/Type /Font
+/BaseFont /Helvetica-BoldOblique
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+11 0 obj
+<<
+/Type /Font
+/BaseFont /Courier
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+12 0 obj
+<<
+/Type /Font
+/BaseFont /Courier-Bold
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+13 0 obj
+<<
+/Type /Font
+/BaseFont /Courier-Oblique
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+14 0 obj
+<<
+/Type /Font
+/BaseFont /Courier-BoldOblique
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+15 0 obj
+<<
+/Type /Font
+/BaseFont /Times-Roman
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+16 0 obj
+<<
+/Type /Font
+/BaseFont /Times-Bold
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+17 0 obj
+<<
+/Type /Font
+/BaseFont /Times-Italic
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+18 0 obj
+<<
+/Type /Font
+/BaseFont /Times-BoldItalic
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+19 0 obj
+<<
+/Type /Font
+/BaseFont /ZapfDingbats
+/Subtype /Type1
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+20 0 obj
+<<
+/Type /Font
+/BaseFont /Symbol
+/Subtype /Type1
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+2 0 obj
+<<
+/ProcSet [/PDF /Text /ImageB /ImageC /ImageI]
+/Font <<
+/F1 7 0 R
+/F2 8 0 R
+/F3 9 0 R
+/F4 10 0 R
+/F5 11 0 R
+/F6 12 0 R
+/F7 13 0 R
+/F8 14 0 R
+/F9 15 0 R
+/F10 16 0 R
+/F11 17 0 R
+/F12 18 0 R
+/F13 19 0 R
+/F14 20 0 R
+>>
+/XObject <<
+>>
+>>
+endobj
+21 0 obj
+<<
+/Producer (jsPDF 2.5.2)
+/CreationDate (D:20260927161232+05'00')
+>>
+endobj
+22 0 obj
+<<
+/Type /Catalog
+/Pages 1 0 R
+/OpenAction [3 0 R /FitH null]
+/PageLayout /OneColumn
+>>
+endobj
+xref
+0 23
+0000000000 65535 f 
+0000006583 00000 n 
+0000008408 00000 n 
+0000000015 00000 n 
+0000000152 00000 n 
+0000004718 00000 n 
+0000004855 00000 n 
+0000006646 00000 n 
+0000006771 00000 n 
+0000006901 00000 n 
+0000007034 00000 n 
+0000007172 00000 n 
+0000007296 00000 n 
+0000007425 00000 n 
+0000007557 00000 n 
+0000007693 00000 n 
+0000007821 00000 n 
+0000007948 00000 n 
+0000008077 00000 n 
+0000008210 00000 n 
+0000008312 00000 n 
+0000008658 00000 n 
+0000008744 00000 n 
+trailer
+<<
+/Size 23
+/Root 22 0 R
+/Info 21 0 R
+/ID [ <110E43CEB4477DE6E1DAD218B172439A> <110E43CEB4477DE6E1DAD218B172439A> ]
+>>
+startxref
+8848
+%%EOF
