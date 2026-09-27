@@ -18,6 +18,8 @@ test('dashboard retains CRUD and adds journal interaction controls', () => {
   assert.match(source, /setTimeout\(\(\) =>/);
   assert.match(source, /localStorage\.setItem\('daymark-theme'/);
   assert.match(source, /deleteTimers\.current\.set/);
+  assert.match(source, /confirmDeleteTask|handleConfirmDelete/);
+  assert.match(source, /jsPDF|doc\.save\(|from 'jspdf'/);
   assert.match(source, /setSort\('manual'\)/);
   assert.match(source, /pinned: !task\.pinned/);
   assert.match(source, /aria-expanded=\{expanded\}/);

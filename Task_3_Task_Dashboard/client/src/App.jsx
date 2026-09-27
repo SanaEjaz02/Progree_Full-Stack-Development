@@ -1,4 +1,5 @@
 ﻿import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { jsPDF } from 'jspdf';
 
 const emptyForm = { title: '', description: '', priority: 'medium', dueDate: '', tag: '', accent: 'violet', emoji: '' };
 const priorityRank = { high: 0, medium: 1, low: 2 };
@@ -20,18 +21,18 @@ function TaskForm({ form, setForm, onSubmit, editingId, onCancel, busy }) {
   </form>;
 }
 
-function TaskCard({ task, expanded, draggable, dragging, removing, onToggle, onEdit, onDelete, onPin, onExpand, onDragStart, onDragOver, onDrop, onDragEnd }) {
+function TaskCard({ task, expanded, draggable, dragging, removing, onToggle, onEdit, onDelete, onPin, onExport, onExpand, onDragStart, onDragOver, onDrop, onDragEnd }) {
   return <article className={`task-card accent-${task.accent || 'violet'} priority-${task.priority} ${task.status === 'complete' ? 'is-complete' : ''} ${expanded ? 'expanded' : ''} ${dragging ? 'dragging' : ''} ${removing ? 'removing' : ''}`} draggable={draggable} onDragStart={(event) => onDragStart(event, task)} onDragOver={onDragOver} onDrop={(event) => onDrop(event, task)} onDragEnd={onDragEnd}>
     <span className="drag-grip" aria-hidden="true" title="Drag to reorder">DRAG</span>
     <button className="task-check" type="button" onClick={() => onToggle(task)} aria-label={`${task.status === 'complete' ? 'Mark' : 'Complete'} ${task.title}`} aria-pressed={task.status === 'complete'}><span aria-hidden="true" /></button>
     <button className="task-main" type="button" onClick={() => onExpand(task.id)} aria-expanded={expanded} aria-label={`${expanded ? 'Collapse' : 'Expand'} details for ${task.title}`}><span className="task-heading"><span className="task-emoji" aria-hidden="true">{task.emoji || ' '}</span><strong>{task.title}</strong><span className={`status-pill ${task.status}`}>{task.status}</span></span><span className="task-summary">{task.description || 'A small step, kept in view.'}</span><span className="task-details">{task.tag && <span className="tag-chip">{task.tag}</span>}{task.dueDate && <time className={isOverdue(task) ? 'overdue' : ''} dateTime={task.dueDate}>{isOverdue(task) ? 'Overdue' : 'Due'} {formatDate(task.dueDate)}</time>}<time dateTime={task.createdAt}>Added {formatDate(task.createdAt)}</time></span></button>
-    <div className="task-actions"><button type="button" className={`pin-action ${task.pinned ? 'pinned' : ''}`} onClick={() => onPin(task)} aria-label={`${task.pinned ? 'Unpin' : 'Pin'} ${task.title}`} aria-pressed={Boolean(task.pinned)} title={task.pinned ? 'Unpin task' : 'Pin task'}>P</button><button type="button" onClick={() => onEdit(task)} aria-label={`Edit ${task.title}`}>Edit</button><button type="button" className="delete-action" onClick={() => onDelete(task)} aria-label={`Delete ${task.title}`}>x</button></div>
-    {expanded && <div className="task-expanded"><div><span>Priority</span><strong>{task.priority}</strong></div><div><span>Created</span><strong>{formatDate(task.createdAt)}</strong></div>{task.dueDate && <div><span>Due</span><strong className={isOverdue(task) ? 'overdue' : ''}>{formatDate(task.dueDate)}</strong></div>}<p>{task.description || 'No extra notes for this intention.'}</p><span className="drag-hint">Drag card to arrange your day</span></div>}
+    <div className="task-actions"><button type="button" className={`pin-action ${task.pinned ? 'pinned' : ''}`} onClick={() => onPin(task)} aria-label={`${task.pinned ? 'Unpin' : 'Pin'} ${task.title}`} aria-pressed={Boolean(task.pinned)} title={task.pinned ? 'Unpin task' : 'Pin task'}>P</button><button type="button" onClick={() => onExport(task)} aria-label={`Export ${task.title} as PDF`} className="export-button" title="Export as PDF">Share</button><button type="button" onClick={() => onEdit(task)} aria-label={`Edit ${task.title}`}>Edit</button><button type="button" className="delete-action" onClick={() => onDelete(task)} aria-label={`Delete ${task.title}`}>x</button></div>
+    {expanded && <div className="task-expanded"><div><span>Priority</span><strong>{task.priority}</strong></div><div><span>Created</span><strong>{formatDate(task.createdAt)}</strong></div>{task.dueDate && <div><span>Due</span><strong className={isOverdue(task) ? 'overdue' : ''}>{formatDate(task.dueDate)}</strong></div>}<p>{task.description || 'No extra notes for this intention.'}</p><button type="button" className="export-button expanded" onClick={() => onExport(task)} aria-label={`Export ${task.title} as PDF`}>Export as PDF</button><span className="drag-hint">Drag card to arrange your day</span></div>}
   </article>;
 }
 
 export default function App() {
-  const [tasks, setTasks] = useState([]); const [form, setForm] = useState(emptyForm); const [editingId, setEditingId] = useState(null); const [loading, setLoading] = useState(true); const [busy, setBusy] = useState(false); const [error, setError] = useState(''); const [query, setQuery] = useState(''); const [filter, setFilter] = useState('all'); const [sort, setSort] = useState('manual'); const [toast, setToast] = useState(null); const [expandedId, setExpandedId] = useState(null); const [dragId, setDragId] = useState(null); const [removingIds, setRemovingIds] = useState([]); const [theme, setTheme] = useState(() => localStorage.getItem('daymark-theme') || 'dark'); const [celebrate, setCelebrate] = useState(false); const wasAllComplete = useRef(false); const hasCompletedAction = useRef(false); const editScrollPosition = useRef(0); const deleteTimers = useRef(new Map());
+  const [tasks, setTasks] = useState([]); const [form, setForm] = useState(emptyForm); const [editingId, setEditingId] = useState(null); const [loading, setLoading] = useState(true); const [busy, setBusy] = useState(false); const [error, setError] = useState(''); const [query, setQuery] = useState(''); const [filter, setFilter] = useState('all'); const [sort, setSort] = useState('manual'); const [toast, setToast] = useState(null); const [expandedId, setExpandedId] = useState(null); const [dragId, setDragId] = useState(null); const [removingIds, setRemovingIds] = useState([]); const [deletePrompt, setDeletePrompt] = useState(null); const [theme, setTheme] = useState(() => localStorage.getItem('daymark-theme') || 'dark'); const [celebrate, setCelebrate] = useState(false); const wasAllComplete = useRef(false); const hasCompletedAction = useRef(false); const editScrollPosition = useRef(0); const deleteTimers = useRef(new Map());
   useEffect(() => { document.documentElement.dataset.theme = theme; localStorage.setItem('daymark-theme', theme); }, [theme]);
   async function loadTasks() { setLoading(true); setError(''); try { const data = await request('/api/tasks'); setTasks(data.tasks); } catch (err) { setError(err.message); } finally { setLoading(false); } }
   useEffect(() => { loadTasks(); }, []);
@@ -40,9 +41,68 @@ export default function App() {
   function startEdit(task) { editScrollPosition.current = window.scrollY; setEditingId(task.id); setForm({ title: task.title, description: task.description, priority: task.priority, dueDate: task.dueDate, tag: task.tag, accent: task.accent || 'violet', emoji: task.emoji || '' }); }
   useLayoutEffect(() => { if (editingId) window.scrollTo(0, editScrollPosition.current); }, [editingId]);
   async function handlePin(task) { try { const data = await request(`/api/tasks/${task.id}`, { method: 'PATCH', body: JSON.stringify({ pinned: !task.pinned }) }); setTasks((current) => current.map((item) => item.id === task.id ? data.task : item)); } catch (err) { setError(err.message); } }
-  function handleDelete(task) { setRemovingIds((current) => [...current, task.id]); setToast({ task }); const timer = window.setTimeout(() => commitDelete(task), 5000); deleteTimers.current.set(task.id, timer); window.setTimeout(() => { if (deleteTimers.current.has(task.id)) setTasks((current) => current.filter((item) => item.id !== task.id)); setRemovingIds((current) => current.filter((id) => id !== task.id)); }, 280); }
+  function handleDelete(task) { setDeletePrompt(task); }
+  function confirmDeleteTask(task) {
+    setDeletePrompt(null);
+    setRemovingIds((current) => [...current, task.id]);
+    setToast({ task });
+    const timer = window.setTimeout(() => commitDelete(task), 5000);
+    deleteTimers.current.set(task.id, timer);
+    window.setTimeout(() => { if (deleteTimers.current.has(task.id)) setTasks((current) => current.filter((item) => item.id !== task.id)); setRemovingIds((current) => current.filter((id) => id !== task.id)); }, 280);
+  }
   async function commitDelete(task) { deleteTimers.current.delete(task.id); try { await request(`/api/tasks/${task.id}`, { method: 'DELETE' }); } catch (err) { setError(err.message); setTasks((current) => [task, ...current]); } setToast((current) => current?.task.id === task.id ? null : current); }
   function undoDelete() { if (!toast) return; const { task } = toast; const timer = deleteTimers.current.get(task.id); if (timer) window.clearTimeout(timer); deleteTimers.current.delete(task.id); setTasks((current) => current.some((item) => item.id === task.id) ? current : [task, ...current]); setRemovingIds((current) => current.filter((id) => id !== task.id)); setToast(null); }
+  function exportTaskAsPdf(task) {
+    const doc = new jsPDF({ unit: 'pt', format: 'a4' });
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const margin = 48;
+    const taskTitle = task.title || 'Untitled task';
+    const description = task.description || 'No additional notes.';
+    const details = [
+      ['Due date', task.dueDate ? new Date(`${task.dueDate}T00:00:00`).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'No due date'],
+      ['Priority', task.priority || 'medium'],
+      ['Status', task.status || 'pending'],
+      ['Tags', task.tag || 'No tag']
+    ];
+    doc.setFillColor(116, 95, 232);
+    doc.rect(0, 0, pageWidth, 94, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(20);
+    doc.text('daymark', margin, 34);
+    doc.setFontSize(12);
+    doc.text('Task export', margin, 56);
+    doc.setTextColor(26, 24, 38);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(24);
+    doc.text(taskTitle, margin, 130);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(12);
+    doc.text('Created ' + new Date(task.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }), margin, 156);
+    doc.setDrawColor(196, 190, 223);
+    doc.setLineWidth(1);
+    doc.line(margin, 176, pageWidth - margin, 176);
+    const contentStart = 208;
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(12);
+    doc.text('Notes', margin, contentStart);
+    doc.setFont('helvetica', 'normal');
+    const descriptionLines = doc.splitTextToSize(description, pageWidth - margin * 2);
+    doc.text(descriptionLines, margin, contentStart + 20);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Details', margin, contentStart + 80 + Math.max(descriptionLines.length * 14, 0));
+    let y = contentStart + 100 + Math.max(descriptionLines.length * 14, 0);
+    doc.setFont('helvetica', 'normal');
+    details.forEach(([label, value]) => {
+      doc.setFont('helvetica', 'bold');
+      doc.text(label + ':', margin, y);
+      doc.setFont('helvetica', 'normal');
+      doc.text(String(value), margin + 90, y);
+      y += 20;
+    });
+    const safeName = (taskTitle || 'task').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'task';
+    doc.save(`${safeName}-daymark.pdf`);
+  }
   const completed = useMemo(() => tasks.filter((task) => task.status === 'complete').length, [tasks]);
   useEffect(() => { const allDone = tasks.length > 0 && completed === tasks.length; if (hasCompletedAction.current && allDone && !wasAllComplete.current) { setCelebrate(true); window.setTimeout(() => setCelebrate(false), 2400); } wasAllComplete.current = allDone; }, [tasks.length, completed]);
   const filteredTasks = useMemo(() => { const result = tasks.filter((task) => { const matchesQuery = `${task.title} ${task.description} ${task.tag}`.toLowerCase().includes(query.toLowerCase()); const matchesFilter = filter === 'all' || (filter === 'active' ? task.status === 'pending' : task.status === 'complete'); return matchesQuery && matchesFilter; }); return [...result].sort((a, b) => Number(Boolean(b.pinned)) - Number(Boolean(a.pinned)) || (sort === 'priority' ? priorityRank[a.priority] - priorityRank[b.priority] : sort === 'due' ? (a.dueDate || '9999').localeCompare(b.dueDate || '9999') : sort === 'created' ? new Date(b.createdAt) - new Date(a.createdAt) : (a.sortOrder || a.id) - (b.sortOrder || b.id))); }, [tasks, query, filter, sort]);
@@ -56,7 +116,7 @@ export default function App() {
     <section className="workspace-grid" aria-label="Task workspace"><aside className="composer-panel"><div className="panel-heading"><div><span className="section-number">01 / INTENTION</span><h2>{editingId ? 'Shape the thought' : 'Begin somewhere.'}</h2></div><span className="panel-icon" aria-hidden="true">+</span></div><TaskForm form={form} setForm={setForm} onSubmit={handleSubmit} editingId={editingId} onCancel={() => { setEditingId(null); setForm(emptyForm); }} busy={busy} /><p className="composer-note">Small rituals make room for meaningful work.</p></aside>
       <section className="tasks-panel"><div className="panel-heading"><div><span className="section-number">02 / YOUR LIST</span><h2>The day, unfolding.</h2></div><span className="task-count">{filteredTasks.length.toString().padStart(2, '0')}</span></div><div className="task-toolbar"><label className="search-field"><span className="search-symbol" aria-hidden="true" /><input aria-label="Search tasks" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Find a thought..." /></label><div className="filter-tabs" role="tablist" aria-label="Task filters">{[['all', 'All'], ['active', 'Open'], ['completed', 'Done']].map(([value, label]) => <button key={value} className={filter === value ? 'active' : ''} type="button" role="tab" aria-selected={filter === value} onClick={() => setFilter(value)}>{label}</button>)}</div><label className="sort-field"><span>Order</span><select aria-label="Sort tasks" value={sort} onChange={(event) => setSort(event.target.value)}><option value="manual">My order</option><option value="created">Recently added</option><option value="due">Due date</option><option value="priority">Priority</option></select></label></div>
         {celebrate && <div className="celebration" role="status"><span className="celebration-star" aria-hidden="true" /><strong>Everything is in its place.</strong><span className="celebration-star" aria-hidden="true" /></div>}
-        {loading ? <div className="state-card"><span className="loader" aria-hidden="true"></span><p>Gathering your thoughts...</p></div> : filteredTasks.length === 0 ? <div className="state-card empty-state"><span className="empty-mark" aria-hidden="true" /><h3>{tasks.length ? 'Nothing found.' : 'A fresh page.'}</h3><p>{tasks.length ? 'Try another phrase or view.' : 'Add a thought when you are ready.'}</p></div> : <div className="task-list">{filteredTasks.map((task) => <TaskCard key={task.id} task={task} expanded={expandedId === task.id} removing={removingIds.includes(task.id)} dragging={dragId === task.id} draggable={sort === 'manual' && filter === 'all' && !query} onToggle={handleToggle} onEdit={startEdit} onDelete={handleDelete} onPin={handlePin} onExpand={(id) => setExpandedId(expandedId === id ? null : id)} onDragStart={dragStart} onDragOver={dragOver} onDrop={dropTask} onDragEnd={() => setDragId(null)} />)}</div>}
+        {loading ? <div className="state-card"><span className="loader" aria-hidden="true"></span><p>Gathering your thoughts...</p></div> : filteredTasks.length === 0 ? <div className="state-card empty-state"><span className="empty-mark" aria-hidden="true" /><h3>{tasks.length ? 'Nothing found.' : 'A fresh page.'}</h3><p>{tasks.length ? 'Try another phrase or view.' : 'Add a thought when you are ready.'}</p></div> : <div className="task-list">{filteredTasks.map((task) => <TaskCard key={task.id} task={task} expanded={expandedId === task.id} removing={removingIds.includes(task.id)} dragging={dragId === task.id} draggable={sort === 'manual' && filter === 'all' && !query} onToggle={handleToggle} onEdit={startEdit} onDelete={handleDelete} onPin={handlePin} onExport={exportTaskAsPdf} onExpand={(id) => setExpandedId(expandedId === id ? null : id)} onDragStart={dragStart} onDragOver={dragOver} onDrop={dropTask} onDragEnd={() => setDragId(null)} />)}</div>}
       </section></section>
-  </main><footer className="app-footer"><span>Daymark <i>|</i> a little more intentional</span><span>Made for your everyday</span></footer>{toast && <div className="toast" role="status"><span>Intention tucked away.</span><button type="button" onClick={undoDelete}>Undo</button></div>}</div>;
+  </main><footer className="app-footer"><span>Daymark <i>|</i> a little more intentional</span><span>Made for your everyday</span></footer>{deletePrompt && <div className="delete-confirm-overlay" role="presentation"><div className="delete-confirm-modal" role="dialog" aria-modal="true" aria-labelledby="delete-task-title"><p>Are you sure you want to delete this task?</p><strong id="delete-task-title">{deletePrompt.title}</strong><div className="delete-confirm-actions"><button type="button" className="button button-quiet" onClick={() => setDeletePrompt(null)}>Cancel</button><button type="button" className="button button-danger" onClick={() => confirmDeleteTask(deletePrompt)}>Yes, delete</button></div></div></div>}{toast && <div className="toast" role="status"><span>Intention tucked away.</span><button type="button" onClick={undoDelete}>Undo</button></div>}</div>;
 }

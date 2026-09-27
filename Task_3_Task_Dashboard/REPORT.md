@@ -1,35 +1,52 @@
-# Task 3 Task Dashboard Report
+# Daymark Task Dashboard Final Report
 
 ## Overview
 
-Daymark is a fully functional task management dashboard with a React client, Express REST API, and file-backed SQLite database. It supports creating, reading, editing, completing, pinning, reordering, and deleting tasks while keeping the interface clear on mobile, tablet, and desktop screens.
+Daymark is a complete task dashboard built with a React client and Express API, using SQLite for local persistence. The final polish pass added a clearer delete confirmation flow and a per-task PDF export option without disrupting the existing CRUD, ordering, pinning, theming, and undo behavior.
 
-## Architecture
+## Final product refinements
 
-The browser loads the React client from Vite on port 5173. Client requests use relative `/api` URLs, and Vite proxies them to Express on port 4000 during development. Express parses JSON, applies CORS, routes task requests, and delegates validation and response shaping to the task controller. The controller uses a repository abstraction backed by SQLite. The database module creates the schema on startup and stores records in `server/data/tasks.db`, so restarting the server does not clear work.
+### 1) Delete confirmation flow
 
-## API and data model
+The destructive delete action is now gated by a small modal popover instead of firing immediately. Clicking the task delete control opens a confirmation panel with the message: "Are you sure you want to delete this task?" and two choices: "Cancel" and "Yes, delete".
 
-Each task has an integer `id`, required `title`, optional `description`, `status` (`pending` or `complete`), priority, optional due date, tag, pin state, accent color, emoji marker, manual order, and an ISO `createdAt` timestamp. The API exposes GET collection, POST creation, PATCH/PUT updates, PUT ordering, and DELETE removal. DELETE returns a small JSON confirmation so browser network tooling receives a normal completed response. Validation rejects empty titles and unsupported priorities, dates, accents, and statuses with readable 400 responses.
+- Cancel leaves the task untouched.
+- Yes, delete triggers the original undo-toast pattern that preserves the task for a short grace period before the permanent API DELETE is sent.
+- This keeps the destructive action explicit and user-controlled while retaining the lightweight recovery pattern.
 
-## Frontend decisions
+### 2) PDF export for individual tasks
 
-The UI uses a two-column workspace on larger screens and a single-column flow below 800px. A focused composer sits beside the task list, with native controls for completion, priority, due date, and tags. Search, All/Active/Completed tabs, and sort controls sit above the list, while a progress bar communicates completion at a glance. Loading, empty, and API error states are visible in the page rather than only in the console.
+Each task card includes a compact Share action that exports a single task as a clean PDF. The implementation uses jsPDF on the client side to generate a properly formatted document with:
 
-The visual direction deliberately differs from Task 2: Daymark uses a near-black ink canvas, blurred glass panels, violet-to-blue gradients, cyan details, editorial serif emphasis, and soft depth. A considered light theme is available from the sun/moon control and persists in localStorage. Buttons lift and press, checkboxes draw in with a tick motion, cards elevate on hover, and deletion fades/collapses before offering a five-second Undo snackbar.
+- the Daymark branding header
+- task title
+- note/description body
+- due date
+- priority
+- status
+- tag metadata
+- created date
 
-## Interaction and accessibility
+The exported PDF is saved locally as a readable document rather than a raw browser screenshot.
 
-Forms use associated labels, required title validation, native buttons for keyboard activation, semantic headings, status pills, and an alert role for API errors. Each task action has an accessible label. Editing stays inline and preserves the exact scroll position; there is no anchor navigation or forced jump. Task additions fade in, completed tasks become visually distinct, and reduced-motion users receive shortened animations through `prefers-reduced-motion`.
+## Architecture and UX notes
 
-## Testing and trade-offs
+The dashboard continues to use the same task API and local SQLite repository. The client remains responsible for presentation and UX polish: modal state, export generation, and the undo timer lifecycle are all kept in the React view layer, while the server continue to handle persistence and validation.
 
-The server uses Node's built-in test runner to exercise empty reads, creation with priority/due date/tag/accent/emoji/pin metadata, updates, deletion, validation, persisted reordering, and a file-backed SQLite reconnect. Client tests verify CRUD requests, personalization, theme persistence hooks, search/filter/sort/undo hooks, responsive rules, no forced scrolling, and motion support. The final suite contains five backend and two frontend tests; the production client build also passes. SQLite was selected because it persists locally without a separate database service; a production deployment could later swap the repository for PostgreSQL without changing the route contract.
+The existing dark-first visual language remains intact, and the update remains responsive across narrow and wider screens. The modal and export actions are designed to fit the existing card layout without introducing layout breaks or horizontal overflow.
 
-## End-to-end verification
+## Verification
 
-The browser walkthrough covers theme persistence, drag ordering persisted through the API, pinning, detail expansion/collapse, emoji/accent personalization, all-complete celebration, and the create/edit/search/filter/sort/complete/delete/Undo flows. Editing preserves `scrollY` when the edit button is already in view. Multiple pending deletions keep independent undo timers. Responsive checks at 375px, 768px, and 1440px found no horizontal overflow; the desktop workspace renders in two columns and the theme control remains 38px square.
+The final checks were run after the refinements were merged:
 
-## Known local setup
+- Client tests: 2/2 passed
+- Server tests: 5/5 passed
+- Production build: succeeded
+- Browser validation: confirmation modal shows and cancel does nothing; confirming delete still triggers the undo toast and can restore the task; export triggers a valid PDF download; responsiveness remains stable at mobile and desktop widths.
 
-The app intentionally does not commit `.env` or SQLite data. `server/.env.example` documents the configurable port, allowed client origin, and database file. `run.bat` handles dependency installation and starts the client and server together.
+## Final status
+
+- Delete confirmation added and working: Yes
+- PDF export working: Yes, using jsPDF
+- Tests passed: Yes
+- Pushed to git: Yes
