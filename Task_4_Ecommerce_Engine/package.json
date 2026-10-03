@@ -1,0 +1,23 @@
+{
+  "name": "se-commerce-engine",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "scripts": {
+    "dev": "concurrently -k -n api,web -c green,cyan \"npm run dev:server\" \"npm run dev:client\"",
+    "dev:client": "npm run dev --workspace client",
+    "dev:server": "npm run dev --workspace server",
+    "build": "npm run build --workspace client",
+    "test": "npm run test --workspace server && npm run test --workspace client",
+    "test:server": "npm run test --workspace server",
+    "test:client": "npm run test --workspace client",
+    "report:pdf": "node scripts/create-report-pdf.mjs"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1",
+    "pdfkit": "^0.20.2"
+  }
+}
