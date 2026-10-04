@@ -4,8 +4,8 @@
   --deep-paper: #e7e0d4;
   --forest: #263d32;
   --forest-dark: #192b23;
-  --ink: #292b26;
-  --muted: #53605a;
+  --ink: #1d231f;
+  --muted: #3f4d47;
   --line: #d9d4c9;
   --brass: #b39362;
   --rust: #9b5a42;
@@ -18,9 +18,9 @@
 html { scroll-behavior: smooth; scroll-padding-top: 92px; }
 body { color: var(--ink); background: var(--white); font-family: var(--sans); font-size: 14px; line-height: 1.5; }
 a { color: inherit; text-decoration: none; }
-button, input { font: inherit; }
+button, input, textarea, select { font: inherit; color: var(--ink); }
 button { color: inherit; }
-button:focus-visible, a:focus-visible, input:focus-visible { outline: 2px solid var(--brass); outline-offset: 3px; }
+button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible { outline: 2px solid var(--brass); outline-offset: 3px; }
 button:disabled { cursor: not-allowed; opacity: .55; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
 
@@ -99,7 +99,7 @@ button:disabled { cursor: not-allowed; opacity: .55; }
 .collection-section--all { padding-top: 96px; }
 .search-field { width: min(250px, 35%); padding: 0 0 8px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--line); color: var(--forest); }
 .search-field input { width: 100%; border: 0; outline: 0; background: transparent; color: var(--ink); font-size: 10px; }
-.search-field input::placeholder { color: #6b726a; }
+.search-field input::placeholder { color: #6a7269; }
 .collection-toolbar { min-height: 45px; margin: -13px 0 28px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--line); }
 .category-tabs { display: flex; flex-wrap: wrap; gap: 22px; }
 .category-tab { padding: 8px 0; border: 0; border-bottom: 1px solid transparent; background: transparent; color: var(--muted); font-size: 9px; cursor: pointer; }
@@ -163,9 +163,11 @@ button:disabled { cursor: not-allowed; opacity: .55; }
 .account-form-wrap h1, .account-page--signed h1 { margin: 13px 0 12px; font: 500 43px/1 var(--serif); }
 .account-intro { margin: 0 0 28px; color: var(--muted); font-size: 11px; line-height: 1.8; }
 .form-stack { display: grid; gap: 17px; }
-.field-label { display: grid; gap: 7px; color: #45483f; font-size: 9px; letter-spacing: .05em; }
-.field-label input { width: 100%; height: 45px; padding: 0 12px; border: 1px solid #d4cfc5; border-radius: 0; background: var(--white); font-size: 11px; letter-spacing: 0; }
-.field-label input::placeholder { color: #6c7068; }
+.field-label { display: grid; gap: 7px; color: var(--forest); font-size: 9px; letter-spacing: .05em; }
+.field-label input { width: 100%; height: 45px; padding: 0 12px; border: 1px solid #d4cfc5; border-radius: 0; background: var(--white); color: var(--ink); font-size: 11px; letter-spacing: 0; }
+.field-label input::placeholder { color: #707a73; }
+.checkout-fields input, .checkout-fields textarea, .checkout-fields select { color: var(--ink); }
+.account-form-wrap h1, .account-page--signed h1 { color: var(--forest); }
 .field-hint { margin-top: -8px; color: var(--muted); font-size: 9px; line-height: 1.5; }
 .form-error { padding: 10px 12px; border-left: 2px solid var(--rust); background: #f0e4dd; color: #773c31; font-size: 10px; }
 .account-switch { margin: 19px 0; color: var(--muted); font-size: 10px; }
