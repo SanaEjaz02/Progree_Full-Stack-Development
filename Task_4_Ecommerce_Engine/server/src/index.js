@@ -1,10 +1,11 @@
 import { app } from './app.js';
-import { connectDatabase, seedCatalogIfEmpty } from './config/database.js';
+import { connectDatabase, seedCatalog, seedDemoUser } from './config/database.js';
 import { env } from './config/env.js';
 
 try {
   const connection = await connectDatabase();
-  await seedCatalogIfEmpty();
+  await seedCatalog();
+  await seedDemoUser();
   app.listen(env.PORT, () => {
     const databaseLabel = connection.mode === 'memory' ? ' (local fallback DB)' : '';
     console.log(`API listening on port ${env.PORT}${databaseLabel}`);

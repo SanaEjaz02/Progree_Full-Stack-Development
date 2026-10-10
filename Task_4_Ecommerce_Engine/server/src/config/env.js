@@ -21,7 +21,7 @@ if (!result.success) {
   throw new Error(`Invalid environment configuration: ${result.error.issues.map((issue) => issue.path.join('.') + ' ' + issue.message).join('; ')}`);
 }
 
-const defaultOrigins = ['http://localhost:5173', 'http://localhost:5174', 'http://127.0.0.1:5173', 'http://127.0.0.1:5174'];
+const defaultOrigins = ['http://localhost:5173', 'http://127.0.0.1:5173'];
 const parseOrigins = (value = '') => value.split(',').map((origin) => origin.trim()).filter(Boolean);
 const mergedOrigins = [...new Set([
   ...parseOrigins(result.data.CLIENT_ORIGINS),

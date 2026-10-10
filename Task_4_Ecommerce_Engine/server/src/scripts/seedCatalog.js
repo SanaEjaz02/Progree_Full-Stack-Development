@@ -12,6 +12,7 @@ try {
       upsert: true
     }
   })));
+  await Product.deleteMany({ slug: { $nin: products.map((product) => product.slug) } });
   console.log(`Catalog ready: ${products.length} products.`);
 } catch (error) {
   console.error('Unable to seed catalog:', error.message);

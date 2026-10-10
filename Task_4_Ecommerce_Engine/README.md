@@ -1,5 +1,14 @@
 # SE Commerce Engine
 
+## How to run
+
+1. Install Node.js 20 or newer.
+2. From this folder, double-click `run.bat`. It installs workspace dependencies if needed, starts the API and storefront in separate windows, waits for both health checks, and opens <http://localhost:5173>.
+3. To start both processes in the current terminal instead, run `npm run dev`.
+4. If the browser reports the API is unavailable, check that the API window is running on port 4000. The storefront requires port 5173; startup stops with a clear error if that port is already occupied.
+
+The demo account is `demo@serein.maison` with password `SereinDemo!2026`. Demo checkout uses Stripe test mode only. If MongoDB Atlas is unreachable, the API starts with an in-memory database; changes will be lost when the API stops.
+
 A boutique lifestyle storefront built with React, Express, MongoDB, and Stripe test mode.
 
 ## Requirements
@@ -53,7 +62,7 @@ For separate terminals, run these exact commands from this folder:
 - `npm run dev`: start client and API together
 - `npm run dev:client`: start only the client
 - `npm run dev:server`: start only the API
-- `npm run seed --workspace server`: idempotently seed ten Serein leather goods
+- `npm run seed --workspace server`: idempotently seed 25 Serein leather goods
 - `npm test`: run server and client tests
 - `npm run build`: build the client for production
 

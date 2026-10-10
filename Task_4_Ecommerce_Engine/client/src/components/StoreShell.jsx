@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowRight, Check, Menu, Plus, ShoppingBag, UserRound, X } from 'lucide-react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
@@ -42,26 +42,66 @@ export function ProductSkeletons() {
   return <div className="product-grid" aria-label="Loading collection">{Array.from({ length: 4 }, (_, index) => <div className="skeleton-product" key={index}><div className="skeleton-product__image" /><div className="skeleton-line" /><div className="skeleton-line skeleton-line--short" /></div>)}</div>;
 }
 
+function SignOutDialog({ onCancel, onConfirm }) {
+  const dialogRef = useRef(null);
+
+  useEffect(() => {
+    const previousFocus = document.activeElement;
+    const dialog = dialogRef.current;
+    const buttons = dialog.querySelectorAll('button');
+    buttons[0]?.focus();
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        onCancel();
+        return;
+      }
+      if (event.key !== 'Tab' || buttons.length === 0) return;
+      if (event.shiftKey && document.activeElement === buttons[0]) {
+        event.preventDefault();
+        buttons[buttons.length - 1].focus();
+      } else if (!event.shiftKey && document.activeElement === buttons[buttons.length - 1]) {
+        event.preventDefault();
+        buttons[0].focus();
+      }
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      previousFocus?.focus();
+    };
+  }, [onCancel]);
+
+  return <div className="modal-backdrop"><section className="signout-dialog" ref={dialogRef} role="dialog" aria-modal="true" aria-labelledby="signout-title" aria-describedby="signout-description"><span className="eyebrow">Serein Maison</span><h2 id="signout-title">Sign out?</h2><p id="signout-description">Sign out of Serein Maison? Your bag stays saved.</p><div className="signout-dialog__actions"><button className="button button--quiet" type="button" onClick={onCancel}>Cancel</button><button className="button button--forest" type="button" onClick={onConfirm}>Sign out</button></div></section></div>;
+}
+
 function Header() {
-  const { user, signOut, cart } = useStore();
+  const { user, signOut, cart, showNotice } = useStore();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [confirmSignOut, setConfirmSignOut] = useState(false);
   const navigate = useNavigate();
   const closeMenu = () => setMenuOpen(false);
+  const finishSignOut = async () => {
+    await signOut();
+    setConfirmSignOut(false);
+    showNotice("You've signed out. Your bag is saved.");
+    navigate('/');
+  };
   return (
     <>
       <div className="announcement"><span>Complimentary delivery on orders over $250</span><ArrowRight size={13} /></div>
       <header className="site-header">
         <button className="icon-button mobile-menu" type="button" aria-label={menuOpen ? 'Close menu' : 'Open menu'} onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? <X /> : <Menu />}</button>
         <nav className={`header-nav ${menuOpen ? 'header-nav--open' : ''}`} aria-label="Main navigation">
-          <NavLink to="/" onClick={closeMenu}>Shop</NavLink><a href="/#atelier" onClick={closeMenu}>Our atelier</a><a href="/#journal" onClick={closeMenu}>Journal</a>
+          <NavLink to="/" onClick={closeMenu}>Shop</NavLink><a href="/#atelier" onClick={closeMenu}>Our atelier</a><a href="/#journal" onClick={closeMenu}>Journal</a>{user && <button className="mobile-signout" type="button" onClick={() => { closeMenu(); setConfirmSignOut(true); }}>Sign out</button>}
         </nav>
         <Link to="/" className="wordmark" aria-label="Serein Maison home"><span className="wordmark__mark">S</span><span>SEREIN <i>MAISON</i></span></Link>
         <div className="header-actions">
           <button className="header-account" type="button" onClick={() => navigate(user ? '/orders' : '/account')} aria-label={user ? 'Your account' : 'Sign in'}><UserRound size={18} /><span>{user ? user.name.split(' ')[0] : 'Account'}</span></button>
-          {user && <button className="text-action" type="button" onClick={() => { signOut(); navigate('/'); }}>Sign out</button>}
+          {user && <button className="text-action" type="button" onClick={() => setConfirmSignOut(true)}>Sign out</button>}
           <Link className="bag-link" to="/bag" aria-label={`Shopping bag, ${cart.itemCount} items`}><ShoppingBag size={18} /><span>Bag</span><b>{cart.itemCount}</b></Link>
         </div>
       </header>
+      {confirmSignOut && <SignOutDialog onCancel={() => setConfirmSignOut(false)} onConfirm={finishSignOut} />}
     </>
   );
 }

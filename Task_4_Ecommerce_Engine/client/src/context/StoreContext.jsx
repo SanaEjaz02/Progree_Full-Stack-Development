@@ -51,7 +51,7 @@ export function StoreProvider({ children }) {
     let active = true;
     apiRequest('/products')
       .then(({ products: result }) => { if (active) setProducts(result); })
-      .catch(() => { if (active) showNotice('The collection could not load. Please refresh in a moment.', 'error'); })
+      .catch((error) => { if (active) showNotice(error.message, 'error'); })
       .finally(() => { if (active) setLoadingProducts(false); });
 
     if (token) {
@@ -106,13 +106,19 @@ export function StoreProvider({ children }) {
     return session.user;
   };
 
-  const signOut = () => {
+  const signOut = async () => {
+    const savedItems = cart.items.map(({ product, quantity }) => ({ product, quantity }));
+    try {
+      if (token) await Promise.all(savedItems.map(({ product }) => apiRequest(`/cart/${product._id}`, { token, method: 'DELETE' })));
+    } catch {
+      showNotice("Your bag couldn't sync before sign-out. It remains saved in this browser.", 'error');
+    }
+    localStorage.setItem(GUEST_CART_KEY, JSON.stringify(savedItems));
     localStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem(USER_KEY);
     setToken(null);
     setUser(null);
-    const guestItems = readJson(GUEST_CART_KEY, []);
-    setCart(presentGuestCart(guestItems));
+    setCart(presentGuestCart(savedItems));
   };
 
   const saveGuestCart = (items) => {

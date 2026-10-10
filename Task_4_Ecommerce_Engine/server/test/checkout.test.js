@@ -18,6 +18,7 @@ test('payment intent amount comes from the database cart, not client input', asy
   await createCheckoutController({ CartModel, stripeFactory }).createPaymentIntent({ user: { _id: 'user-1', id: 'user-1' } }, response, assert.fail);
 
   assert.equal(requestData.amount, 124000);
+  assert.deepEqual(requestData.payment_method_types, ['card']);
   assert.equal(response.body.amount, 124000);
   assert.equal(response.body.clientSecret, 'pi_secret');
 });

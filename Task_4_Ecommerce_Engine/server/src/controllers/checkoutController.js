@@ -44,7 +44,7 @@ export function createCheckoutController({ stripeFactory = getStripe, CartModel 
         const intent = await stripe.paymentIntents.create({
           amount: subtotalCents,
           currency: 'usd',
-          automatic_payment_methods: { enabled: true },
+          payment_method_types: ['card'],
           metadata: { userId: request.user.id }
         });
         response.json({ clientSecret: intent.client_secret, amount: subtotalCents });
